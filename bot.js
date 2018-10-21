@@ -1,48 +1,33 @@
-var twit = require('twit');
+const twit = require('twit');
 
-var config = {
+const config = {
   consumer_key: process.env.CONSUMER_KEY,
   consumer_secret: process.env.CONSUMER_SECRET,
   access_token: process.env.ACCESS_TOKEN,
   access_token_secret: process.env.ACCESS_TOKEN_SECRET
 };
+const Twitter = new twit(config);
 
-var Twitter = new twit(config);
-
-var retweet = function() {
-  var params = {
+const getIds = async () => {
+  const params = {
     q: '#100DaysOfCode, #100daysofcode, #100DaysofCode',
     result_type: 'recent',
     lang: 'en'
   };
-
-  Twitter.get('search/tweets', params, function(err, data) {
-    if (!err) {
-      var retweetId = data.statuses[0].id_str;
-
-      Twitter.post(
-        'statuses/retweet/:id',
-        {
-          id: retweetId
-        },
-        function(err, response) {
-          if (response) {
-            console.log('Retweeted!!!');
-          }
-
-          if (err) {
-            console.log(
-              'Something went wrong while RETWEETING... Duplication maybe...'
-            );
-          }
-        }
-      );
-    } else {
-      console.log('Something went wrong while SEARCHING...');
-    }
-  });
+  try {
+    const { data } = await Twitter.get('search/tweets', params);
+    const ids = data.statuses.map(tweet => {
+      reTweet(tweet.id_str);
+    });
+  } catch (e) {
+    console.log(`Error encountereed: ${e.allErrors[0].message}`);
+  }
 };
 
-for (var i = 0; i < 10; i++) {
-  retweet();
-}
+const reTweet = async id => {
+  await Twitter.post('statuses/retweet/:id', { id })
+    .then(ok => console.log(`Success. retweeted!`))
+    .catch(e => console.log(`Error encountered: ${e}`));
+};
+
+getIds();
