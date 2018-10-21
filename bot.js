@@ -1,4 +1,4 @@
-var Twit = require('twit');
+var twit = require('twit');
 
 var config = {
   consumer_key: process.env.CONSUMER_KEY,
@@ -6,6 +6,8 @@ var config = {
   access_token: process.env.ACCESS_TOKEN,
   access_token_secret: process.env.ACCESS_TOKEN_SECRET
 };
+
+var Twitter = new twit(config);
 
 var retweet = function() {
   var params = {
@@ -40,3 +42,5 @@ var retweet = function() {
     }
   });
 };
+
+retweet();
