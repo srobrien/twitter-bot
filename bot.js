@@ -10,7 +10,7 @@ const Twitter = new twit(config);
 
 const getIds = async () => {
   const params = {
-    q: '#javascript, #webdeveloper, #webdev',
+    q: '#javascript, #webdeveloper, #webdev, #100DaysOfCode',
     result_type: 'recent',
     lang: 'en'
   };
